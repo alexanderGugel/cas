@@ -93,9 +93,9 @@ func (c *Storage) String() string {
 }
 
 func (c *Storage) Update() {
-    for _, path := range c.KeyToPath {
-        c.ImportFile(path)
-    }
+	for _, path := range c.KeyToPath {
+		c.ImportFile(path)
+	}
 }
 
 func New() *Storage {
