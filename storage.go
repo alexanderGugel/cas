@@ -10,7 +10,10 @@ import (
 )
 
 // [Content-Addressed Storage](http://de.wikipedia.org/wiki/Content-Addressed_Storage)
-type Storage map[string]string
+type Storage struct {
+    KeyToPath map[string]string
+    PathToKey map[string]string
+}
 
 // imports a file
 func (c *Storage) ImportFile(path string) (key string, err error) {
@@ -29,7 +32,9 @@ func (c *Storage) ImportFile(path string) (key string, err error) {
         return "", err
     }
     key = hex.EncodeToString(hash.Sum(nil))
-    (*c)[key] = path
+
+    c.KeyToPath[key] = path
+    c.PathToKey[path] = key
     return key, nil
 }
 
@@ -54,17 +59,37 @@ func (c *Storage) ImportDir(path string) (err error) {
 
 // retrieves a file by the key returned when importing it
 func (c *Storage) Get(key string) (*os.File, error) {
-    return os.Open((*c)[key])
+    return os.Open(c.KeyToPath[key])
+}
+
+func (c *Storage) DelByPath(path string) (err error) {
+    path, err = filepath.Abs(path)
+    if err != nil {
+        return err
+    }
+    key := c.PathToKey[path]
+    delete(c.PathToKey, path)
+    delete(c.KeyToPath, key)
+    return nil
+}
+
+func (c *Storage) DelByKey(key string) () {
+    path := c.KeyToPath[key]
+    delete(c.PathToKey, path)
+    delete(c.KeyToPath, key)
 }
 
 func (c *Storage) String() string {
     s := ""
-    for key, value := range *c {
+    for key, value := range c.KeyToPath {
         s = s + key + value + "\n"
     }
     return s
 }
 
 func New() *Storage {
-    return &Storage{}
+    return &Storage{
+        KeyToPath: make(map[string]string),
+        PathToKey: make(map[string]string),
+    }
 }
