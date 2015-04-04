@@ -86,10 +86,16 @@ func (c *Storage) Flush() {
 
 func (c *Storage) String() string {
 	s := ""
-	for key, value := range c.KeyToPath {
-		s = s + key + value + "\n"
+	for key, path := range c.KeyToPath {
+		s = s + key + path + "\n"
 	}
 	return s
+}
+
+func (c *Storage) Update() {
+    for _, path := range c.KeyToPath {
+        c.ImportFile(path)
+    }
 }
 
 func New() *Storage {
