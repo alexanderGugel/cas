@@ -73,10 +73,15 @@ func (c *Storage) DelByPath(path string) (err error) {
     return nil
 }
 
-func (c *Storage) DelByKey(key string) () {
+func (c *Storage) DelByKey(key string) {
     path := c.KeyToPath[key]
     delete(c.PathToKey, path)
     delete(c.KeyToPath, key)
+}
+
+func (c *Storage) Flush() {
+    c.PathToKey = make(map[string]string)
+    c.KeyToPath = make(map[string]string)
 }
 
 func (c *Storage) String() string {
