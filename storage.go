@@ -21,6 +21,7 @@ func (c *Storage) ImportFile(path string) (key string, err error) {
     if err != nil {
         return "", err
     }
+    c.DelByPath(path)
     file, err := os.Open(path)
     if err != nil {
         return "", err
@@ -32,7 +33,6 @@ func (c *Storage) ImportFile(path string) (key string, err error) {
         return "", err
     }
     key = hex.EncodeToString(hash.Sum(nil))
-
     c.KeyToPath[key] = path
     c.PathToKey[path] = key
     return key, nil
