@@ -87,7 +87,7 @@ func (c *Storage) Flush() {
 func (c *Storage) String() string {
 	s := ""
 	for key, path := range c.KeyToPath {
-		s = s + key + path + "\n"
+		s = s + key + " " + path + "\n"
 	}
 	return s
 }
