@@ -58,8 +58,17 @@ func (c *Storage) ImportDir(path string) (err error) {
 }
 
 // retrieves a file by the key returned when importing it
-func (c *Storage) Get(key string) (*os.File, error) {
-	return os.Open(c.KeyToPath[key])
+func (c *Storage) Get(key string) (f *os.File, ok bool, err error) {
+	path := c.KeyToPath[key]
+	if path == "" {
+		return nil, false, nil
+	}
+	f, err = os.Open(path)
+	if err != nil {
+		return nil, false, err
+	}
+	return f, true, nil
+
 }
 
 func (c *Storage) Has(key string) bool {

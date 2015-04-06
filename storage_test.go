@@ -11,7 +11,10 @@ func TestImportFile(t *testing.T) {
 	if err != nil {
 		t.Errorf("ImportFile(\"./storage.go\") %v", err)
 	}
-	f, err := storage.Get(key)
+	f, ok, err := storage.Get(key)
+	if !ok {
+		t.Errorf("Get(\"%v\") should be ok, got \"%v\"", key, ok)
+	}
 	if err != nil {
 		t.Errorf("Get(\"%v\") %v", key, err)
 	}
