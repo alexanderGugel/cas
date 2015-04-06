@@ -62,6 +62,18 @@ func (c *Storage) Get(key string) (*os.File, error) {
 	return os.Open(c.KeyToPath[key])
 }
 
+func (c *Storage) Has(key string) bool {
+	return c.HasKey(key)
+}
+
+func (c *Storage) HasKey(key string) bool {
+	return c.KeyToPath[key] != ""
+}
+
+func (c *Storage) HasPath(path string) bool {
+	return c.PathToKey[path] != ""
+}
+
 func (c *Storage) DelByPath(path string) (err error) {
 	path, err = filepath.Abs(path)
 	if err != nil {
